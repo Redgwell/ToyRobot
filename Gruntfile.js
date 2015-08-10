@@ -647,22 +647,22 @@ module.exports = function (grunt) {
   grunt.registerTask('test-watch', function(target) {
     if (target === 'server') {
       grunt.task.run([
-        'test:server',
-        'watch:mochaTest'
+        'watch:mochaTest',
+        'test:server'
       ]);
     }
     else if (target === 'client') {
       grunt.task.run([
-        'test:client',
-        'watch:jsTest'
+        'watch:jsTest',
+        'test:client'
       ]);
     }
     else {
       grunt.task.run([
-        'test:server',
-        'test:client',
         'watch:mochaTest',
-        'watch:jsTest'
+        'watch:jsTest',
+        'test:server',
+        'test:client'
       ]);
     }
   });
