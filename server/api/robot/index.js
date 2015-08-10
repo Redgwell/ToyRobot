@@ -9,7 +9,7 @@ router.get('/', controller.list);
 router.post('/', controller.create);
 router.get('/:id', controller.getById);
 router.put('/:id/move', controller.move);
+router.put('/:id/rotate', controller.rotate);
 // router.get('/:id/report', controller.getReport);
-// router.put('/:id/rotate', controller.rotate);
 
 module.exports = router;

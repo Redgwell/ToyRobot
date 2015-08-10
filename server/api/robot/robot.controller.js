@@ -41,9 +41,30 @@ exports.create = function(req, res) {
 
 exports.move = function(req, res) {
   getRobotWithId(req, res).then(function(robot) {
-    res.json(robot);
+    robot.move();
+    robotsRepo.update(robot).then(function() {
+      res.json(robot);
+    });
   });
-  // TODO - get the robot, move it, save it, then return
+};
+
+exports.rotate = function(req, res) {
+  var direction = (req.body.direction || '').toLowerCase();
+  if (direction !== 'left' && direction !== 'right') {
+    res.status(400).json({ error: 'Invalid direction. You must specify \'left\' or \'right\'. '});
+  }
+  getRobotWithId(req, res).then(function(robot) {
+    if (direction === 'left') {
+      robot.rotateLeft();
+    }
+    else {
+      robot.rotateRight();
+    }
+
+    robotsRepo.update(robot).then(function() {
+      res.json(robot);
+    });
+  });
 };
 
 // router.post('/', controller.create);

@@ -6,8 +6,9 @@ var request = require('supertest');
 
 describe('http assertions', function() {
 
-  function assertIs404(method, url, done) {
+  function assertIs404(method, url, done, payload) {
     request(app)[method](url)
+      .send(payload)
       .expect(404)
       .expect('Content-Type', /json/)
       .end(function(err, res) {
@@ -119,26 +120,102 @@ describe('http assertions', function() {
       assertIs404('put', '/api/robots/123/move', done)
     });
 
-    // it('should move the with a robot when a valid id is specified', function(done) {
-    //   request(app)
-    //     .put('/api/robots/' + newRobot.id + '/move')
-    //     .end(function(err, res) {
-    //       if (err) return done(err);
+    it('should move the robot when a valid id is specified', function(done) {
+      request(app)
+        .put('/api/robots/' + newRobot.id + '/move')
+        .end(function(err, res) {
+          if (err) return done(err);
 
-    //       var movedRobot = res.body;
-    //       movedRobot.should.be.instanceof(Object);
-    //       movedRobot.id.should.equal(newRobot.id);
-    //       movedRobot.x.should.equal(newRobot.x);
-    //       movedRobot.y.should.equal(newRobot.y + 1);
-    //       done();
-    //     });
+          var movedRobot = res.body;
+          movedRobot.should.be.instanceof(Object);
+          movedRobot.id.should.equal(newRobot.id);
+          movedRobot.x.should.equal(newRobot.x);
+          movedRobot.y.should.equal(newRobot.y + 1);
+          done();
+        });
 
-    //   });
+      });
   });
 
+
+  describe('PUT /api/robots/:id/rotate', function() {
+
+    var newRobot;
+
+    beforeEach(function(done) {
+      request(app)
+        .post('/api/robots')
+        .end(function(err, res) {
+          if (err) return done(err);
+          newRobot = res.body;
+          done();
+        });
+    });
+
+    function expectRotateWithPayloadWill400(payload, done) {
+      request(app)
+        .put('/api/robots/123/rotate')
+        .send(payload)
+        .expect(400)
+        .expect('Content-Type', /json/)
+        .end(function(err, res) {
+          if (err) return done(err);
+          res.body.should.be.instanceof(Object);
+          res.body.error.should.be.instanceof(String);
+          done();
+        });
+    }
+
+    it('should respond with bad request when no direction is specified', function(done) {
+      expectRotateWithPayloadWill400({}, done);
+    });
+
+    it('should respond with bad request when unknown direction is specified', function(done) {
+      expectRotateWithPayloadWill400({ direction: '104239j83fieo3' }, done);
+    });
+
+    it('should respond with not found when unknown id is specified', function(done) {
+      assertIs404('put', '/api/robots/123/rotate', done, { direction: 'left' })
+    });
+
+    it('should rotate the robot left when a valid id and direction is specified', function(done) {
+      request(app)
+        .put('/api/robots/' + newRobot.id + '/rotate')
+        .send({ direction: 'left' })
+        .end(function(err, res) {
+          if (err) return done(err);
+
+          var movedRobot = res.body;
+          movedRobot.should.be.instanceof(Object);
+          movedRobot.id.should.equal(newRobot.id);
+          movedRobot.x.should.equal(newRobot.x);
+          movedRobot.y.should.equal(newRobot.y);
+          movedRobot.direction.should.equal('WEST');
+          done();
+        });
+
+      });
+
+
+    it('should rotate the robot right when a valid id and direction is specified', function(done) {
+      request(app)
+        .put('/api/robots/' + newRobot.id + '/rotate')
+        .send({ direction: 'right' })
+        .end(function(err, res) {
+          if (err) return done(err);
+
+          var movedRobot = res.body;
+          movedRobot.should.be.instanceof(Object);
+          movedRobot.id.should.equal(newRobot.id);
+          movedRobot.x.should.equal(newRobot.x);
+          movedRobot.y.should.equal(newRobot.y);
+          movedRobot.direction.should.equal('EAST');
+          done();
+        });
+
+      });
+  });
 });
 
 
-// router.put('/:id/move', controller.move);
 // router.get('/:id/report', controller.getReport);
-// router.put('/:id/rotate', controller.rotate);
