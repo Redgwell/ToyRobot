@@ -78,4 +78,8 @@ robot.prototype.rotateRight = function() {
   this.direction = directions[index];
 }
 
+robot.prototype.getPositionReport = function() {
+  return 'At ' + this.x + ',' + this.y + ' facing ' + this.direction;
+};
+
 module.exports = robot;

@@ -117,3 +117,12 @@ describe('rotateRight', function() {
 
   });
 });
+
+describe('getPositionReport', function() {
+  it('should return the postion and direction', function() {
+
+    var robot = new robotModel(3, 2, 'EAST');
+    robot.getPositionReport().should.equal('At 3,2 facing EAST');
+
+  });
+});
