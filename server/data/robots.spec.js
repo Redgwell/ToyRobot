@@ -56,3 +56,37 @@ describe('repo.create', function() {
   });
 
 });
+
+describe('repo.reset', function() {
+  it('should clear the collection of all robots', function(done) {
+    repo.reset();
+    repo.list().then(function(robots) {
+      robots.length.should.be.equal(0);
+      done();
+    });
+  });
+});
+
+describe('repo.list', function() {
+  beforeEach(function() {
+    repo.reset();
+  });
+
+  it('should return an empty list when the repo is new', function(done) {
+    repo.list().then(function(robots) {
+      robots.length.should.be.equal(0);
+      done();
+    });
+  });
+
+  it('should return all robots added to the list when robots have been created', function(done) {
+    repo.create().then(function() { repo.create().then(
+      function() {
+        repo.list().then(function(robots) {
+          robots.length.should.be.equal(2);
+          done();
+        });
+      });
+    });
+  });
+});

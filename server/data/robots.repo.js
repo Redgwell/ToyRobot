@@ -14,6 +14,9 @@ function rectifyPosition(pos, min, max) {
 }
 
 module.exports = {
+  reset: function() {
+    robotsCollection = [];
+  },
   create: function(x, y, direction) {
     var robot = {
       id: uuid.v1(),
@@ -24,5 +27,9 @@ module.exports = {
     robotsCollection.push(robot);
 
     return q.resolve(robot);
+  },
+
+  list: function() {
+    return q.resolve(robotsCollection);
   }
 };
