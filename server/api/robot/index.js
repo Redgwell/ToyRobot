@@ -10,6 +10,6 @@ router.post('/', controller.create);
 router.get('/:id', controller.getById);
 router.put('/:id/move', controller.move);
 router.put('/:id/rotate', controller.rotate);
-// router.get('/:id/report', controller.getReport);
+router.get('/:id/report', controller.getReport);
 
 module.exports = router;

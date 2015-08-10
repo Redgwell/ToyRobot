@@ -215,6 +215,41 @@ describe('http assertions', function() {
 
       });
   });
+
+
+  describe('GET /api/robots/:id/report', function() {
+
+    var newRobot;
+
+    beforeEach(function(done) {
+      request(app)
+        .post('/api/robots')
+        .end(function(err, res) {
+          if (err) return done(err);
+          newRobot = res.body;
+          done();
+        });
+    });
+
+    it('should respond with not found when unknown id is specified', function(done) {
+      assertIs404('get', '/api/robots/123/report', done)
+    });
+
+    it('should get a report when a valid id is specified', function(done) {
+      request(app)
+        .get('/api/robots/' + newRobot.id + '/report')
+        .end(function(err, res) {
+          if (err) return done(err);
+
+          res.body.report.should.be.instanceof(String);
+          res.body.report.indexOf(newRobot.direction).should.be.greaterThan(-1);
+          res.body.report.indexOf(newRobot.x + ',' + newRobot.y).should.be.greaterThan(-1);
+          done();
+        });
+
+      });
+  });
+
 });
 
 

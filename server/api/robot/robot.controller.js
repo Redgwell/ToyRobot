@@ -67,38 +67,8 @@ exports.rotate = function(req, res) {
   });
 };
 
-// router.post('/', controller.create);
-// router.get('/:id', controller.getById);
-// router.put('/:id/move', controller.move);
-// router.get('/:id/report', controller.getReport);
-// router.put('/:id/rotate', controller.rotate);
-
-
-// var _ = require('lodash');
-// var uuid = require('uuid');
-// var Q = require('q');
-
-// module.exports = {
-//   place: function(x, y, direction) {
-//     // var robot = {
-//     //   id: uuid.v1(),
-//     //   x: rectifyPosition(x, robotConstants.limits.min.x, robotConstants.limits.max.x),
-//     //   y: rectifyPosition(y, robotConstants.limits.min.y, robotConstants.limits.max.y),
-//     //   direction: robotConstants.direction.parse(direction) || robotConstants.direction.N
-//     // }
-//     // robotsCollection.push(robot);
-
-//     // return Q.resolve(robot);
-//   },
-//   move: function() {
-//     //return Q.resolve(robotsCollection);
-//   },
-//   left: function(id) {
-//     //return Q.resolve(_.find(robotsCollection, {id: id}));
-//   },
-//   right: function(id) {
-//     //return Q.resolve(_.find(robotsCollection, {id: id}));
-//   },
-//   report: function(robot) {
-//   }
-// };
+exports.getReport = function(req, res) {
+  getRobotWithId(req, res).then(function(robot) {
+    res.json({ report: robot.getPositionReport() });
+  });
+};
