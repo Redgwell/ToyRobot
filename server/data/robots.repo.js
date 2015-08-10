@@ -1,30 +1,19 @@
 'use strict';
 
 var _ = require('lodash');
-var uuid = require('uuid');
 var Q = require('q');
 
-var robotConstants = require('./robots.constants');
+var robotModel = require('../models/robot.model');
 
 var robotsCollection = [];
-
-// Ensures the specified position is parseable as an integer and within the specified limits
-function rectifyPosition(pos, min, max) {
-  var posInt = parseInt(pos);
-  return isNaN(posInt) || posInt < min || posInt > max ? 0 : posInt;
-}
 
 module.exports = {
   reset: function() {
     robotsCollection = [];
   },
   create: function(x, y, direction) {
-    var robot = {
-      id: uuid.v1(),
-      x: rectifyPosition(x, robotConstants.limits.min.x, robotConstants.limits.max.x),
-      y: rectifyPosition(y, robotConstants.limits.min.y, robotConstants.limits.max.y),
-      direction: robotConstants.direction.parse(direction) || robotConstants.direction.N
-    }
+    var robot = new robotModel(x, y, direction);
+
     robotsCollection.push(robot);
 
     return Q.resolve(robot);
@@ -48,9 +37,8 @@ module.exports = {
       return deferred.promise;
     }
 
-    storedRobot.x = robot.x;
-    storedRobot.y = robot.y;
-    storedRobot.direction = robot.direction;
+    storedRobot.setDirection(robot.direction);
+    storedRobot.setPosition(robot.x, robot.y);
 
     deferred.resolve();
 
