@@ -18,21 +18,21 @@ describe('repo tests', function() {
 
     it('should return a new robot at position 0,0 facing North when no arguments are specified', function(done) {
       repo.create().then(function(robot) {
-        assertRobotHasProperties(robot, 0, 0, 'North');
+        assertRobotHasProperties(robot, 0, 0, 'NORTH');
         done();
       });
     });
 
     it('should return a new robot at position 0,0 facing North when invalid arguments are specified', function(done) {
       repo.create(-3, -1, 'nowhere').then(function(robot) {
-        assertRobotHasProperties(robot, 0, 0, 'North');
+        assertRobotHasProperties(robot, 0, 0, 'NORTH');
         done();
       });
     });
 
     it('should return a new robot at the specified position and direction when valid arguments are specified', function(done) {
       repo.create(3, 2, 'East').then(function(robot) {
-        assertRobotHasProperties(robot, 3, 2, 'East');
+        assertRobotHasProperties(robot, 3, 2, 'EAST');
         done();
       });
     });
@@ -137,7 +137,7 @@ describe('repo tests', function() {
         repo.update(robotToStore).then(function() {
 
           repo.getById(robot.id).then(function(fetchedRobot) {
-            assertRobotHasProperties(fetchedRobot, 3, 2, 'East')
+            assertRobotHasProperties(fetchedRobot, 3, 2, 'EAST')
             done();
           });
 
