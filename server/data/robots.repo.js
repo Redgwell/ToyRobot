@@ -1,7 +1,8 @@
 'use strict';
 
+var _ = require('lodash');
 var uuid = require('uuid');
-var q = require('q');
+var Q = require('q');
 
 var robotConstants = require('./robots.constants');
 
@@ -26,10 +27,34 @@ module.exports = {
     }
     robotsCollection.push(robot);
 
-    return q.resolve(robot);
+    return Q.resolve(robot);
   },
-
   list: function() {
-    return q.resolve(robotsCollection);
+    return Q.resolve(robotsCollection);
+  },
+  getById: function(id) {
+    return Q.resolve(_.find(robotsCollection, {id: id}));
+  },
+  update: function(robot) {
+    var deferred = Q.defer();
+    if (!robot) {
+      deferred.reject('No robot specified');
+      return deferred.promise;
+    }
+
+    var storedRobot = _.find(robotsCollection, {id: robot.id});
+    if (!storedRobot) {
+      deferred.reject('No matching robot found');
+      return deferred.promise;
+    }
+
+    storedRobot.x = robot.x;
+    storedRobot.y = robot.y;
+    storedRobot.direction = robot.direction;
+
+    deferred.resolve();
+
+    return deferred.promise;
+
   }
 };
