@@ -47,56 +47,19 @@ angular.module('toyRobotApp')
           }
         }
 
-        function setRobotDirection(ctx, img, x, y, direction)
-        {
-            var angle = 0;
-            switch (direction) {
-              case 'NORTH':
-                angle = 0;
-                break;
-              case 'SOUTH':
-                angle = 180;
-                break;
-              case 'EAST':
-                angle = 90;
-                break;
-              case 'WEST':
-                angle = 270;
-                break;
-            }
-
-            // save the current co-ordinate system
-            // before we screw with it
-            ctx.save();
-
-            // move to the middle of where we want to draw our image
-            ctx.translate(x, y);
-
-            // rotate around that point, converting our
-            // angle from degrees to radians
-            ctx.rotate(angle * TO_RADIANS);
-
-            // draw it up and to the left by half the width
-            // and height of the image
-            ctx.drawImage(img, -(img.width/2), -(img.height/2));
-
-            // and restore the co-ords to how they were when we began
-            ctx.restore();
-        }
-
         function setRobotPosition(ctx, img, x, y, direction) {
 
           var angle = directionToDegrees(direction);
-          angle = 90;
           // reverse y to get it into the canvas coordinate system
-          y = yGridCells - y;
+          y = yGridCells - 1 -y;
           x *= gridCellWidth;
           y *= gridCellHeight;
 
           ctx.save();
-          ctx.translate(x + (gridCellWidth/2), y - (gridCellHeight/2));
+          ctx.translate(x, y);
+          ctx.translate(gridCellWidth/2, gridCellHeight/2);
           ctx.rotate(angle * TO_RADIANS);
-          ctx.drawImage(img, x - gridCellWidth, (gridCellHeight/2), gridCellWidth, gridCellHeight);
+          ctx.drawImage(img, -gridCellWidth/2, -gridCellHeight/2, gridCellWidth, gridCellHeight);
           ctx.restore();
         }
 
@@ -108,7 +71,7 @@ angular.module('toyRobotApp')
 
         var robot = new Image();
         robot.onload = function () {
-          setRobotPosition(context, robot, 2, 2, 'SOUTH');
+          //setRobotPosition(context, robot, 3, 4, 'EAST');
         };
         robot.src = 'assets/images/robot.png';
 
