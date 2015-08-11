@@ -12,4 +12,8 @@ router.put('/:id/move', controller.move);
 router.put('/:id/rotate', controller.rotate);
 router.get('/:id/report', controller.getReport);
 
-module.exports = router;
+module.exports = function(server) {
+  require('./robot.events')(server);
+  return router;
+}
+

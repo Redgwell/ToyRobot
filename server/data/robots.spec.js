@@ -37,6 +37,17 @@ describe('repo tests', function() {
       });
     });
 
+    it('should emit a robotCreated event when a new robot has been created', function(done) {
+      var handler = function(robot) {
+        repo.removeListener('robotCreated', handler);
+        assertRobotHasProperties(robot, 3, 2, 'EAST');
+        done();
+      };
+      repo.addListener('robotCreated', handler);
+
+      repo.create(3, 2, 'East');
+    });
+
   });
 
   describe('repo.reset', function() {
@@ -145,6 +156,22 @@ describe('repo tests', function() {
       });
     });
 
+    it('should emit a robotUpdated event when a robot has been updated', function(done) {
+      var handler = function(robot) {
+        repo.removeListener('robotUpdated', handler);
+        assertRobotHasProperties(robot, 1, 2, 'WEST');
+        done();
+      };
+      repo.addListener('robotUpdated', handler);
+
+      repo.create().then(function(robot) {
+        robot.x = 1;
+        robot.y = 2;
+        robot.direction = 'WEST';
+        repo.update(robot);
+      });
+
+    });
 
   });
 
