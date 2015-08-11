@@ -16,7 +16,7 @@ function rectifyPosition(pos, min, max) {
 }
 
 var robot = function(x, y, direction) {
-  this.id = uuid.v1();
+  this.id = uuid.v4();
   this.setPosition(x, y);
   this.direction = 'NORTH'; // default to North, and then try and set direction to the value specified
   this.setDirection(direction);

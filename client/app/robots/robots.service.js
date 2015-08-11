@@ -24,5 +24,4 @@ angular.module('toyRobotApp').service('robotsService', function ($http) {
   this.getRobotReport = function(id) {
     return $http.get('/api/robots/' + id + '/report');
   };
-
 });

@@ -41,8 +41,6 @@ angular.module('toyRobotApp')
 
           canvas = $('<canvas class="overlay"/>').attr({width: bw + 1, height: bh + 1}).appendTo(container);
           return canvas.get(0).getContext('2d');
-
-          //return ctx;
         }
 
         function directionToDegrees(direction) {
@@ -52,9 +50,9 @@ angular.module('toyRobotApp')
             case 'SOUTH':
               return 270;
             case 'EAST':
-              return 0;
-            case 'WEST':
               return 180;
+            case 'WEST':
+              return 0;
             default:
               return 0;
           }

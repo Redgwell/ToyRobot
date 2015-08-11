@@ -9,7 +9,7 @@ angular.module('toyRobotApp')
       scope: {
         currentRobot: '=ngModel'
       },
-      controller: function($scope, robotsService, interpreterService) {
+      controller: function($scope, robotsService, interpreterService, EventClient) {
         $scope.availableRobots = [];
         $scope.commandHistory = '';
         $scope.currentCommand = '';
@@ -18,12 +18,39 @@ angular.module('toyRobotApp')
           $scope.commandHistory += message + '\n';
         }
 
+        new EventClient(
+          function onCreate(robot) {
+            $scope.$apply(function() {
+              $scope.availableRobots.push(robot);
+            });
+          },
+          function onUpdate(robot) {
+            $scope.$apply(function() {
+              angular.forEach($scope.availableRobots, function(v) {
+                if (v.id === robot.id) {
+                  v.x = robot.x;
+                  v.y = robot.y;
+                  v.direction = robot.direction;
+                }
+              });
+              if ($scope.currentRobot && $scope.currentRobot.id === robot.id) {
+                $scope.currentRobot = robot;
+              }
+            });
+          }
+        );
+
         $scope.submitCommand = function() {
           log('submitting command ' + $scope.currentCommand);
           var robotId = $scope.currentRobot ? $scope.currentRobot.id : 0;
           interpreterService.handleCommand($scope.currentCommand, robotId).then(function(result) {
-            if (result.command === 'PLACE') {
-              $scope.currentRobot = result.commandResult;
+            switch (result.command) {
+              case 'PLACE':
+                $scope.currentRobot = result.commandResult;
+                break;
+              case 'REPORT':
+                log(result.commandResult.report);
+                break;
             }
           }, function(err) {
             log(err);
@@ -38,7 +65,6 @@ angular.module('toyRobotApp')
         robotsService.getRobots().success(function(result) {
           $scope.availableRobots = result;
           log('Received ' + result.length + ' robot(s)');
-          console.log($scope.availableRobots);
         });
 
       }

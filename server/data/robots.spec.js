@@ -94,7 +94,7 @@ describe('repo tests', function() {
     });
 
     it('should return null if a valid but missing id is specified', function(done) {
-      repo.getById(uuid.v1()).then(function(robot) {
+      repo.getById(uuid.v4()).then(function(robot) {
         should.not.exist(robot);
         done();
       });
@@ -121,7 +121,7 @@ describe('repo tests', function() {
     });
 
     it('should return error if robot is specified without matching id', function(done) {
-      repo.update({ id: uuid.v1() }).then(function(){}, function(err) {
+      repo.update({ id: uuid.v4() }).then(function(){}, function(err) {
         err.length.should.be.greaterThan(0);
         done();
       });
