@@ -2,8 +2,8 @@
 <div class="form-group">
   <label for="select-robots">Other robots</label>
   <select class="form-control" name="select-robots" size="10"
-    ng-model="currentRobot"
-    ng-options="r as (r.id + ' - ' + r.x + ',' + r.y + ',' + r.direction) for r in availableRobots">
+    ng-model="selectedId"
+    ng-options="r.id as (r.id + ' - ' + r.x + ',' + r.y + ',' + r.direction) for r in availableRobots">
   </select>
 </div>
 

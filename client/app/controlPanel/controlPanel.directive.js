@@ -13,6 +13,7 @@ angular.module('toyRobotApp')
         $scope.availableRobots = [];
         $scope.commandHistory = '';
         $scope.currentCommand = '';
+        $scope.selectedId = null;
 
         function log(message) {
           $scope.commandHistory += message + '\n';
@@ -40,6 +41,14 @@ angular.module('toyRobotApp')
           }
         );
 
+        $scope.$watch('selectedId', function(id) {
+          for (var i = 0; i < $scope.availableRobots.length; i++) {
+            if ($scope.availableRobots[i].id === id) {
+              $scope.currentRobot = $scope.availableRobots[i];
+            }
+          }
+        });
+
         $scope.submitCommand = function() {
           log('submitting command ' + $scope.currentCommand);
           var robotId = $scope.currentRobot ? $scope.currentRobot.id : 0;
@@ -47,6 +56,7 @@ angular.module('toyRobotApp')
             switch (result.command) {
               case 'PLACE':
                 $scope.currentRobot = result.commandResult;
+                $scope.selectedId = $scope.currentRobot.id;
                 break;
               case 'REPORT':
                 log(result.commandResult.report);
