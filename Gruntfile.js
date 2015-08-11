@@ -15,7 +15,6 @@ module.exports = function (grunt) {
     useminPrepare: 'grunt-usemin',
     ngtemplates: 'grunt-angular-templates',
     cdnify: 'grunt-google-cdn',
-    protractor: 'grunt-protractor-runner',
     buildcontrol: 'grunt-build-control'
   });
 
@@ -77,7 +76,7 @@ module.exports = function (grunt) {
           '<%= yeoman.client %>/{app,components}/**/*.spec.js',
           '<%= yeoman.client %>/{app,components}/**/*.mock.js'
         ],
-        tasks: ['newer:jshint:all', 'karma']
+        tasks: ['newer:jshint:all']
       },
       injectLess: {
         files: [
@@ -427,31 +426,11 @@ module.exports = function (grunt) {
     },
 
     // Test settings
-    karma: {
-      unit: {
-        configFile: 'karma.conf.js',
-        singleRun: true
-      }
-    },
-
     mochaTest: {
       options: {
         reporter: 'spec'
       },
       src: ['server/**/*.spec.js']
-    },
-
-    protractor: {
-      options: {
-        configFile: 'protractor.conf.js'
-      },
-      chrome: {
-        options: {
-          args: {
-            browser: 'chrome'
-          }
-        }
-      }
     },
 
     env: {
@@ -618,23 +597,7 @@ module.exports = function (grunt) {
         'injector:less',
         'concurrent:test',
         'injector',
-        'autoprefixer',
-        'karma'
-      ]);
-    }
-
-    else if (target === 'e2e') {
-      return grunt.task.run([
-        'clean:server',
-        'env:all',
-        'env:test',
-        'injector:less',
-        'concurrent:test',
-        'injector',
-        'wiredep',
-        'autoprefixer',
-        'express:dev',
-        'protractor'
+        'autoprefixer'
       ]);
     }
 
