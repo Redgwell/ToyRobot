@@ -21,7 +21,6 @@ function getRobotWithId(req, res) {
 
 // Get list of robots
 exports.list = function(req, res) {
-//  res.json([]);
   robotsRepo.list().then(function(robots) {
     res.json(robots);
   });

@@ -5,7 +5,11 @@ angular.module('toyRobotApp')
     return {
       templateUrl: 'app/tableTop/tableTop.html',
       restrict: 'E',
-      link: function (scope, element, attrs) {
+      require: 'ngModel',
+      scope: {
+        model: '=ngModel'
+      },
+      link: function (scope, element) {
 
         // grid size set up
         var bw = 400;
@@ -16,64 +20,76 @@ angular.module('toyRobotApp')
         var gridCellHeight = bh / yGridCells;
         var TO_RADIANS = Math.PI / 180;
 
-        function drawBoard(ctx){
-            for (var x = 0; x <= bw; x += gridCellWidth) {
-                ctx.moveTo(0.5 + x, 0);
-                ctx.lineTo(0.5 + x, bh);
-            }
+        // draws the board with the grid lines
+        function drawBoard(){
+          var container = element.find('.table-top-canvas-container');
+          var canvas = $('<canvas/>').attr({width: bw + 1, height: bh + 1}).appendTo(container);
+          var ctx = canvas.get(0).getContext('2d');
 
+          for (var x = 0; x <= bw; x += gridCellWidth) {
+              ctx.moveTo(0.5 + x, 0);
+              ctx.lineTo(0.5 + x, bh);
+          }
 
-            for (var y = 0; y <= bh; y += gridCellHeight) {
-                ctx.moveTo(0, 0.5 + y);
-                ctx.lineTo(bw, 0.5 + y);
-            }
+          for (var y = 0; y <= bh; y += gridCellHeight) {
+              ctx.moveTo(0, 0.5 + y);
+              ctx.lineTo(bw, 0.5 + y);
+          }
 
-            ctx.strokeStyle = 'black';
-            ctx.stroke();
+          ctx.strokeStyle = 'black';
+          ctx.stroke();
+
+          canvas = $('<canvas class="overlay"/>').attr({width: bw + 1, height: bh + 1}).appendTo(container);
+          return canvas.get(0).getContext('2d');
+
+          //return ctx;
         }
 
         function directionToDegrees(direction) {
           switch (direction) {
             case 'NORTH':
-              return 0;
-            case 'SOUTH':
-              return 180;
-            case 'EAST':
               return 90;
-            case 'WEST':
+            case 'SOUTH':
               return 270;
+            case 'EAST':
+              return 0;
+            case 'WEST':
+              return 180;
             default:
               return 0;
           }
         }
 
-        function setRobotPosition(ctx, img, x, y, direction) {
+        function setRobotPosition() {
+          var model = scope.model;
+          if (!model || isNaN(parseInt(model.x)) || isNaN(parseInt(model.y))) {
+            return;
+          }
 
-          var angle = directionToDegrees(direction);
+          var angle = directionToDegrees(model.direction);
+
+          var x = model.x * gridCellWidth;
           // reverse y to get it into the canvas coordinate system
-          y = yGridCells - 1 -y;
-          x *= gridCellWidth;
-          y *= gridCellHeight;
+          var y = (yGridCells - 1 - model.y) * gridCellHeight;
+
+          var ctx = scope.context;
+          ctx.clearRect(0, 0, bw, bh);
 
           ctx.save();
           ctx.translate(x, y);
           ctx.translate(gridCellWidth/2, gridCellHeight/2);
           ctx.rotate(angle * TO_RADIANS);
-          ctx.drawImage(img, -gridCellWidth/2, -gridCellHeight/2, gridCellWidth, gridCellHeight);
+          ctx.drawImage(scope.robotImage, -gridCellWidth/2, -gridCellHeight/2, gridCellWidth, gridCellHeight);
           ctx.restore();
         }
 
+        scope.context = drawBoard();
 
-        var canvas = $('<canvas/>').attr({width: bw + 1, height: bh + 1}).appendTo(element);
-        var context = canvas.get(0).getContext('2d');
+        scope.robotImage = new Image();
+        scope.robotImage.onload = setRobotPosition;
+        scope.robotImage.src = 'assets/images/robot.png';
 
-        drawBoard(context);
-
-        var robot = new Image();
-        robot.onload = function () {
-          //setRobotPosition(context, robot, 3, 4, 'EAST');
-        };
-        robot.src = 'assets/images/robot.png';
+        scope.$watch('model', setRobotPosition);
 
       }
     };
