@@ -24,13 +24,16 @@ var robot = function(x, y, direction) {
 
 robot.prototype.setDirection = function(direction) {
   if (!direction) {
-    return;
+    return false;
   }
 
   var index = _.indexOf(directions, direction.toUpperCase());
-  if (index !== -1) {
-    this.direction = directions[index];
+  if (index === -1) {
+    return false;
   }
+
+  this.direction = directions[index];
+  return true;
 };
 
 robot.prototype.setPosition = function(x, y) {
